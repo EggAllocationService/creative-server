@@ -32,7 +32,7 @@ public class VoidWorldGenerator implements ChunkGenerator {
 
     public static final Biome LOBBY = Biome.builder()
             .category(Biome.Category.NONE)
-            .name(NamespaceID.from("kyle:lobby"))
+            .name(NamespaceID.from("egg:lobby"))
             .temperature(0.8F)
             .downfall(0.4F)
             .depth(0.125F)

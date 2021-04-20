@@ -13,6 +13,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
+import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.event.player.PlayerSkinInitEvent;
 import net.minestom.server.extras.PlacementRules;
@@ -62,6 +63,9 @@ public class Main {
         });
         globalEventHandler.addEventCallback(PlayerSkinInitEvent.class, event -> {
             event.setSkin(SkinManager.getName(event.getPlayer().getUsername()));
+        });
+        globalEventHandler.addEventCallback(PlayerDisconnectEvent.class, event -> {
+            InstanceManager.get().playerLeave(event);
         });
 
 

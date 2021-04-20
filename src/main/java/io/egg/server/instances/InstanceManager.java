@@ -4,12 +4,15 @@ import com.google.common.collect.HashBiMap;
 import io.egg.server.loading.DatabaseWorldLoader;
 import io.egg.server.profiles.DefaultProfileDelegate;
 import io.egg.server.profiles.PlayerJoinProfileEvent;
+import io.egg.server.profiles.PlayerLeaveProfileEvent;
 import io.egg.server.profiles.ProfileData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.InstanceContainer;
+import net.minestom.server.utils.Position;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
@@ -56,7 +59,7 @@ public class InstanceManager {
         InstanceContainer ic = handle.createInstanceContainer();
         ProfileData pd = delegate.getData();
         ic.setChunkLoader(new DatabaseWorldLoader(ic, pd.mapName));
-        delegate.setInstance(ic);
+        delegate.setInstance(name, ic);
         delegate.setupInstance(ic);
 
         ProfiledInstance pi = new ProfiledInstance(ic, delegate, pd, name);
@@ -75,7 +78,7 @@ public class InstanceManager {
         PlayerJoinProfileEvent e = new PlayerJoinProfileEvent(p);
         target.callEvent(PlayerJoinProfileEvent.class, e);
         if (e.isCancelled()) {
-            p.sendMessage(Component.text("Pre-receive hook was declined by other instance: ", TextColor.color(255, 50, 50))
+            p.sendMessage(Component.text("Pre-receive hook was declined by the target instance: ", TextColor.color(255, 50, 50))
                 .append(Component.text(e.getCancelReason(), TextColor.color(0xfff133)))
             );
             return;
@@ -84,10 +87,32 @@ public class InstanceManager {
         p.sendMessage(Component.text("Sending you to ", TextColor.color(0x036bfc))
             .append(Component.text(instanceName(target), TextColor.color(0xfff133)))
         );
-
+        p.getInstance().callEvent(PlayerLeaveProfileEvent.class, new PlayerLeaveProfileEvent(p));
         p.setInstance(target, e.getJoinPos());
 
 
+    }
+
+    public void playerLeave(PlayerDisconnectEvent e) {
+
+        e.getPlayer().getInstance().callEvent(PlayerLeaveProfileEvent.class, new PlayerLeaveProfileEvent(e.getPlayer()));
+
+    }
+
+    public void destroy(String name) {
+        InstanceContainer i = instancesByName.get(name);
+        if (i == null) return;
+        for (Player p : i.getPlayers()) {
+            p.setInstance(getInstance("lobby"), new Position(0, 65, 0));
+            p.sendMessage(Component.text("You have been transferred to ", TextColor.color(0x036bfc))
+                    .append(Component.text("lobby", TextColor.color(0xfff133)))
+                    .append(Component.text(" (previous instance has been recycled)", TextColor.color(0xff5133)))
+
+            );
+        }
+        handle.unregisterInstance(i);
+        instancesByName.remove(name);
+        instances.remove(name);
     }
 
     public InstanceContainer getInstance(String name) {

@@ -23,6 +23,8 @@ public class World {
     @BsonId
     public String id;
 
+    public String owner;
+
     // Maps position to UUID of WorldChunk
     volatile public HashMap<String, String> chunks = new HashMap<>();
 
@@ -180,5 +182,12 @@ public class World {
         bbb.writeInt(uncompressed.length);
         bbb.write(compresssed);
         return bbb.toByteArray();
+    }
+
+    /**
+     * This method should only be called from the thread which currently owns the world
+     */
+    public void unloadAllChunks() {
+        this.cache.clear();
     }
 }

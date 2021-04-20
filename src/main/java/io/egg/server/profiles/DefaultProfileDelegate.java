@@ -16,7 +16,7 @@ import java.lang.reflect.Parameter;
 public abstract class DefaultProfileDelegate {
     protected BossBar defaultBar;
     InstanceContainer instance;
-
+    protected String name;
 
     public void initEvents() {
         Method[] ms = this.getClass().getMethods();
@@ -46,8 +46,9 @@ public abstract class DefaultProfileDelegate {
         }
 
     }
-    public void setInstance(InstanceContainer i ) {
+    public void setInstance(String n, InstanceContainer i ) {
         instance = i;
+        name = n;
         defaultBar = BossBar.bossBar(Component.text("Please report this bar's existence!",TextColor.color(0xff00ff) ),  0.0f, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS);
 
         initEvents();
