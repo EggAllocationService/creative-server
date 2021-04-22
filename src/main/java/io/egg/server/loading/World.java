@@ -58,11 +58,11 @@ public class World {
     }
 
     public WorldChunk getChunkKey(String chunkId) {
+        if (chunkId.equals("holder")) return null;
         if (cache.containsKey(chunkId)) {
             return cache.get(chunkId);
         }
         WorldChunk c = Database.getInstance().worldChunks.find(eq("_id", chunkId)).first();
-        assert c != null;
         byte[] compressed = c.data.clone();
         c.data = new byte[c.rawSize];
 
@@ -155,6 +155,16 @@ public class World {
     public void export(Consumer<byte[]> callback) {
         new ExportThread(this, callback).start();
     }
+
+
+    public void downloadAllChunks() {
+        for (String s : this.chunks.values()) {
+            getChunkKey(s);
+        }
+
+
+    }
+
 
 
     protected byte[] exportBytes() {

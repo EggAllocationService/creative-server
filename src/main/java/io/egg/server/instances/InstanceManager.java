@@ -99,10 +99,11 @@ public class InstanceManager {
 
     }
 
-    public void destroy(String name) {
+    public void destroy(String name, Player ignore) {
         InstanceContainer i = instancesByName.get(name);
         if (i == null) return;
         for (Player p : i.getPlayers()) {
+            if (p == ignore) continue;
             p.setInstance(getInstance("lobby"), new Position(0, 65, 0));
             p.sendMessage(Component.text("You have been transferred to ", TextColor.color(0x036bfc))
                     .append(Component.text("lobby", TextColor.color(0xfff133)))

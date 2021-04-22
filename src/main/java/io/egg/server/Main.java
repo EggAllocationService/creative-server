@@ -1,6 +1,7 @@
 package io.egg.server;
 
 import io.egg.server.commands.*;
+import io.egg.server.creative.*;
 import io.egg.server.database.Database;
 import io.egg.server.generators.VoidWorldGenerator;
 import io.egg.server.instances.InstanceManager;
@@ -30,16 +31,21 @@ public class Main {
         MinecraftServer.setBrandName("EggServer");
 
         InstanceManager.init();
-        Database.init("testing");
+        Database.init("creative");
         MinecraftServer.getCommandManager().register(new SaveCommand());
         MinecraftServer.getSchedulerManager().buildTask(new InstanceNameTask()).repeat(100, TimeUnit.MILLISECOND).schedule();
         MinecraftServer.getSchedulerManager().buildTask(() -> InstanceManager.get().tick()).repeat(1, TimeUnit.TICK).schedule();
         MinecraftServer.getBiomeManager().addBiome(VoidWorldGenerator.LOBBY);
         MinecraftServer.getCommandManager().register(new StopCommand());
         MinecraftServer.getCommandManager().register(new GamemodeCommand());
-        MinecraftServer.getCommandManager().register(new SwitchInstanceCommand());
-        MinecraftServer.getCommandManager().register(new EditMapCommand());
+        //MinecraftServer.getCommandManager().register(new SwitchInstanceCommand());
+       // MinecraftServer.getCommandManager().register(new EditMapCommand());
         MinecraftServer.getCommandManager().register(new ExportWorldCommand());
+
+        MinecraftServer.getCommandManager().register(new WorldCommand());
+        MinecraftServer.getCommandManager().register(new LobbyCommand());
+
+
         MinecraftServer.setChunkViewDistance(8);
 
 
@@ -69,6 +75,8 @@ public class Main {
         });
 
 
+        // TODO This should NOT be shipped
+        MinecraftServer.getConnectionManager().setUuidProvider(MojangUUIDProvider::calculate);
 
 
         m.start("0.0.0.0", 25565, (playerConnection, responseData) -> {

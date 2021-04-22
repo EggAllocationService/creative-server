@@ -9,11 +9,7 @@ public class VoidIslandPopulator implements ChunkPopulator {
     @Override
     public void populateChunk(ChunkBatch batch, Chunk chunk) {
         if (chunk.getChunkX() == 0 && chunk.getChunkZ() ==0) {
-            for (int x = -1; x <= 1; x++) {
-                for (int z = -1; z <= 1; z++) {
-                    batch.setBlock(x, 64, z, Block.BEDROCK);
-                }
-            }
+           batch.setBlock(0, 64, 0, Block.BEDROCK);
 
         }
     }

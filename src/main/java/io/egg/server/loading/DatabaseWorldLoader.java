@@ -38,6 +38,9 @@ public class DatabaseWorldLoader implements IChunkLoader {
 
     @Override
     public void saveChunk(@NotNull Chunk chunk, @Nullable Runnable callback) {
+        // don't save any chunks over 5 or under -5
+        if (chunk.getChunkX() > 5 || chunk.getChunkX() < -5) return;
+        if (chunk.getChunkZ() > 5 || chunk.getChunkZ() < -5) return;
 
         World w = WorldManager.getWorld(worldName);
         if (w == null) {

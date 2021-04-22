@@ -3,6 +3,7 @@ package io.egg.server.profiles.delegates;
 import io.egg.server.generators.VoidWorldGenerator;
 import io.egg.server.profiles.DefaultProfileDelegate;
 import io.egg.server.profiles.EventHandler;
+import io.egg.server.profiles.PlayerJoinProfileEvent;
 import io.egg.server.profiles.ProfileData;
 import net.minestom.server.data.SerializableData;
 import net.minestom.server.data.SerializableDataImpl;
@@ -40,6 +41,12 @@ public class LobbyProfileDelegate extends DefaultProfileDelegate {
         if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void join(PlayerJoinProfileEvent e) {
+        e.getP().setGameMode(GameMode.ADVENTURE);
+        e.getP().getInventory().clear();
     }
 
     @Override
