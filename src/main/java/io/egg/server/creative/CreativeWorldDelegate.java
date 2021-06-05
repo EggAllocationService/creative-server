@@ -28,7 +28,7 @@ public class CreativeWorldDelegate extends DefaultProfileDelegate {
     @Override
     public void setupInstance(Instance i) {
         i.setChunkGenerator(new FlatWorldGenerator());
-        i.getWorldBorder().setDiameter(99);
+        i.getWorldBorder().setDiameter(96);
         i.getWorldBorder().setCenter(0, 0);
     }
 

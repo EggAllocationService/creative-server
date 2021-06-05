@@ -35,12 +35,13 @@ public class DatabaseWorldLoader implements IChunkLoader {
         }
 
     }
-
+    public static boolean inBounds(int i) {
+        return i >= -3 && i <= 2;
+    }
     @Override
     public void saveChunk(@NotNull Chunk chunk, @Nullable Runnable callback) {
         // don't save any chunks over 5 or under -5
-        if (chunk.getChunkX() > 5 || chunk.getChunkX() < -5) return;
-        if (chunk.getChunkZ() > 5 || chunk.getChunkZ() < -5) return;
+        if (!inBounds(chunk.getChunkX()) ||  !inBounds(chunk.getChunkZ())) return;
 
         World w = WorldManager.getWorld(worldName);
         if (w == null) {

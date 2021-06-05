@@ -11,6 +11,7 @@ public class FriendManager {
     public static HashMap<UUID, HashSet<String>> friends = new HashMap<>();
 
     public static boolean addFriend(Player p, Player o) {
+        if (p == o) return false;
         if (!friends.containsKey(p.getUuid())) {
             friends.put(p.getUuid(), new HashSet<>());
         }
@@ -19,6 +20,20 @@ public class FriendManager {
         }
         friends.get(p.getUuid()).add(o.getUsername());
         return true;
+    }
+
+    public static boolean removeFriend(Player p, String o) {
+        if (!friends.containsKey(p.getUuid())) {
+            return false;
+        }
+        if (friends.get(p.getUuid()).contains(o)) {
+            friends.get(p.getUuid()).remove(o);
+            return true;
+        }
+        return false;
+    }
+    public static HashSet<String> getFriends(Player p) {
+        return friends.get(p.getUuid());
     }
 
     public static boolean isFriend(Player p, Player o) {

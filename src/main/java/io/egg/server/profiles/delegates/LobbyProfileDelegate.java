@@ -38,6 +38,10 @@ public class LobbyProfileDelegate extends DefaultProfileDelegate {
     @Override
     @EventHandler
     public void placeBlock(PlayerBlockPlaceEvent e) {
+        if (!System.getProperties().containsKey("RwLobby")) {
+            e.setCancelled(true);
+            return;
+        }
         if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
             e.setCancelled(true);
         }
@@ -52,6 +56,10 @@ public class LobbyProfileDelegate extends DefaultProfileDelegate {
     @Override
     @EventHandler
     public void removeBlock(PlayerBlockBreakEvent e) {
+        if (!System.getProperties().containsKey("RwLobby")) {
+            e.setCancelled(true);
+            return;
+        }
         if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
             e.setCancelled(true);
         }
@@ -59,7 +67,7 @@ public class LobbyProfileDelegate extends DefaultProfileDelegate {
 
     @Override
     public String getName() {
-        return "io.egg.LobbyProfileDelegate";
+        return "Lobby";
     }
 
     @EventHandler
